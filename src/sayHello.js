@@ -1,3 +1,3 @@
 export function sayHello() {
-  alert("Hello!");
+  global.alert("Hello!");
 }

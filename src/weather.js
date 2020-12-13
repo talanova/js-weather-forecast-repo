@@ -4,7 +4,7 @@ export async function getWeather(city) {
   return (await response).json();
 }
 
-function convertKelvinToCelsius(kelvin) {
+export function convertKelvinToCelsius(kelvin) {
   return (kelvin - 273.15).toFixed(1);
 }
 

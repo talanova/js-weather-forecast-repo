@@ -1,0 +1,55 @@
+import { readList, saveList, drawList } from "./list";
+import { getWeather, drawWeather } from "./weather";
+import { drawMap } from "./map";
+
+export async function getCurrentCity() {
+  const url = "https://get.geojs.io/v1/ip/geo.json";
+  const response = await fetch(url);
+  return response.json();
+}
+
+export async function draw(el) {
+  const inputField = document.createElement("form");
+  inputField.id = "input-field";
+  const input = document.createElement("input");
+  const button = document.createElement("button");
+  button.innerText = "Get weather";
+  inputField.appendChild(input);
+  inputField.appendChild(button);
+  el.appendChild(inputField);
+
+  const weatherField = document.createElement("div");
+  weatherField.id = "weather-field";
+  el.appendChild(weatherField);
+
+  const listField = document.createElement("div");
+  listField.id = "list-field";
+  el.appendChild(listField);
+
+  const mapField = document.createElement("div");
+  mapField.id = "map-field";
+  el.appendChild(mapField);
+
+  inputField.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const city = input.value;
+    input.value = "";
+
+    const weather = await getWeather(city);
+    if (weather.cod === "404") {
+      return;
+    }
+
+    const list = await readList();
+    list.push(city);
+    while (list.length > 10) {
+      list.shift();
+    }
+
+    drawMap(weather.coord.lat, weather.coord.lon);
+    drawWeather(weather);
+    await drawList(list);
+    await saveList(list);
+  });
+}

@@ -30,7 +30,7 @@ export async function draw(el) {
   mapField.id = "map-field";
   el.appendChild(mapField);
 
-  inputField.addEventListener("submit", async (e) => {
+  async function onSubmit(e) {
     e.preventDefault();
 
     const city = input.value;
@@ -51,5 +51,7 @@ export async function draw(el) {
     drawWeather(weather);
     await drawList(list);
     await saveList(list);
-  });
+  }
+
+  inputField.addEventListener("submit", onSubmit);
 }

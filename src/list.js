@@ -2,11 +2,11 @@ import { drawWeather, getWeather } from "./weather";
 import { drawMap } from "./map";
 
 export async function readList() {
-  const list = JSON.parse(localStorage.getItem("cities"));
-  if (list == null) {
+  const json = localStorage.getItem("cities");
+  if (json == null) {
     return [];
   }
-  return list;
+  return JSON.parse(json);
 }
 
 export async function saveList(list) {
@@ -15,14 +15,17 @@ export async function saveList(list) {
 
 async function onListItemClick(city) {
   const weather = await getWeather(city);
-  drawWeather(weather);
-  drawMap(weather.coord.lat, weather.coord.lon);
+
+  const weatherField = document.querySelector("#weather-field");
+  drawWeather(weatherField, weather);
+
+  const mapField = document.querySelector("#map-field");
+  drawMap(mapField, weather.coord.lat, weather.coord.lon);
 }
 
-export async function drawList(list) {
-  const div = document.getElementById("list-field");
-  while (div.hasChildNodes()) {
-    div.removeChild(div.lastChild);
+export async function drawList(el, list) {
+  while (el.hasChildNodes()) {
+    el.removeChild(el.lastChild);
   }
 
   const lo = document.createElement("lo");
@@ -36,5 +39,5 @@ export async function drawList(list) {
     });
     lo.appendChild(li);
   });
-  div.appendChild(lo);
+  el.appendChild(lo);
 }

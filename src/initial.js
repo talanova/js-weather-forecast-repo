@@ -47,9 +47,9 @@ export async function draw(el) {
       list.shift();
     }
 
-    drawMap(weather.coord.lat, weather.coord.lon);
-    drawWeather(weather);
-    await drawList(list);
+    drawMap(mapField, weather.coord.lat, weather.coord.lon);
+    drawWeather(weatherField, weather);
+    await drawList(listField, list);
     await saveList(list);
   }
 

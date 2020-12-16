@@ -60,7 +60,8 @@ describe("drawWeather", () => {
 
   it("returns basic markup", () => {
     draw(el);
-    drawWeather(data);
+    const weatherField = el.querySelector("#weather-field");
+    drawWeather(weatherField, data);
 
     const p = el.querySelector("p");
     const img = el.querySelector("img");

@@ -10,7 +10,13 @@ const appElement = document.getElementById("app");
   const list = await readList();
   const data = await getCurrentCity();
   const weather = await getWeather(data.city);
-  drawMap(weather.coord.lat, weather.coord.lon);
-  drawWeather(weather);
-  await drawList(list);
+
+  const mapField = appElement.querySelector("#map-field");
+  drawMap(mapField, weather.coord.lat, weather.coord.lon);
+
+  const weatherField = appElement.querySelector("#weather-field");
+  drawWeather(weatherField, weather);
+
+  const listField = appElement.querySelector("#list-field");
+  await drawList(listField, list);
 })();

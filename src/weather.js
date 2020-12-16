@@ -8,18 +8,18 @@ export function convertKelvinToCelsius(kelvin) {
   return (kelvin - 273.15).toFixed(1);
 }
 
-export function drawWeather(data) {
-  const div = document.getElementById("weather-field");
-  while (div.hasChildNodes()) {
-    div.removeChild(div.lastChild);
+export function drawWeather(el, data) {
+  while (el.hasChildNodes()) {
+    el.removeChild(el.lastChild);
   }
+
   const p = document.createElement("p");
   p.innerText = `${data.name} ${convertKelvinToCelsius(
     Number(data.main.temp)
   )}°C`;
-  div.appendChild(p);
+  el.appendChild(p);
 
   const img = document.createElement("img");
   img.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-  div.appendChild(img);
+  el.appendChild(img);
 }

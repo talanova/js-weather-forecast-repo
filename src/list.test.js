@@ -1,3 +1,5 @@
+import { readList, saveList } from "./list";
+
 describe("try mock localStorage", () => {
   beforeEach(() => {
     // values stored in tests will also be available in other tests unless you run
@@ -7,14 +9,19 @@ describe("try mock localStorage", () => {
     // or individually reset a mock used
     localStorage.setItem.mockClear();
   });
-  /*
-    it('should save to localStorage', () => {
-        const KEY = 'foo';
-        const VALUE = 'bar';
-        dispatch(action.update(KEY, VALUE));
-        expect(global.localStorage.setItem).toHaveBeenLastCalledWith(KEY, VALUE);
-        // expect(global.localStorage.__STORE__[KEY]).toBe(VALUE);
-        // expect(Object.keys(global.localStorage.__STORE__).length).toBe(1);
-    });
- */
+
+  it("should save to localStorage", async () => {
+    const key = "cities";
+    const list = [];
+    const value = JSON.stringify(list);
+    await saveList(list);
+    expect(global.localStorage.setItem).toHaveBeenLastCalledWith(key, value);
+  });
+
+  it("should get from localStorage", async () => {
+    const key = "cities";
+    const list = await readList();
+    expect(global.localStorage.getItem).toHaveBeenLastCalledWith(key);
+    expect(list).toStrictEqual([]);
+  });
 });

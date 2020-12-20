@@ -38,7 +38,7 @@ describe("mock localStorage", () => {
 describe("drawList", () => {
   let el;
   const data = ["moscow", "new york"];
-  /* const weather = {
+  const weather = {
     coord: { lon: 37.62, lat: 55.75 },
     weather: [
       { id: 600, main: "Snow", description: "light snow", icon: "13n" },
@@ -68,15 +68,15 @@ describe("drawList", () => {
     id: 524901,
     name: "Moscow",
     cod: 200,
-  }; */
+  };
 
-  /*  const utils = jest.createMockFromModule("./weather");
-  utils.getWeather = jest.fn((city) => {
-    console.log(`in mock city is ${city}`);
-    return new Promise((resolve, reject) => {
-          city === "moscow" ? resolve(weather) : reject(null)});
-  });
-*/
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve(weather),
+    })
+  );
+  // eslint-disable-next-line global-require
+  const module = require("./weather");
 
   beforeEach(() => {
     el = document.createElement("div");
@@ -97,7 +97,7 @@ describe("drawList", () => {
     expect(li[0].querySelector("a").innerText).toBe(data[0]);
     expect(li[1].querySelector("a").innerText).toBe(data[1]);
   });
-  /*
+
   it("raise getWeather on city click", () => {
     draw(el);
     const listField = el.querySelector("#list-field");
@@ -106,9 +106,8 @@ describe("drawList", () => {
     const li = el.querySelectorAll("li");
     const a = li[0].querySelector("a");
 
+    jest.spyOn(module, "getWeather");
     a.dispatchEvent(new window.Event("click"));
-    expect(utils.getWeather.mock).toBeTruthy();
-    expect(utils.getWeather).toHaveBeenCalledWith(data[0]);
+    expect(module.getWeather).toHaveBeenCalledWith(data[0]);
   });
- */
 });

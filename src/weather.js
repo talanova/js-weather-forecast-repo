@@ -1,6 +1,6 @@
 export async function getWeather(city) {
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=48594e0287f39a8f2307182407fc5b7e`;
-  const response = await fetch(url);
+  const response = await global.fetch(url);
   return (await response).json();
 }
 

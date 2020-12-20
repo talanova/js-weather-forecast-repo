@@ -6,8 +6,8 @@ import { drawMap } from "./map";
 const appElement = document.getElementById("app");
 // eslint-disable-next-line func-names
 (async function () {
-  await draw(appElement);
-  const list = await readList();
+  draw(appElement);
+  const list = readList();
   const data = await getCurrentCity();
   const weather = await getWeather(data.city);
 
@@ -18,5 +18,5 @@ const appElement = document.getElementById("app");
   drawWeather(weatherField, weather);
 
   const listField = appElement.querySelector("#list-field");
-  await drawList(listField, list);
+  drawList(listField, list);
 })();

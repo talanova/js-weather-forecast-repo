@@ -23,7 +23,7 @@ async function onListItemClick(city) {
   drawMap(mapField, weather.coord.lat, weather.coord.lon);
 }
 
-export async function drawList(el, list) {
+export function drawList(el, list) {
   while (el.hasChildNodes()) {
     el.removeChild(el.lastChild);
   }
@@ -36,9 +36,9 @@ export async function drawList(el, list) {
     a.className = "btn";
     a.href = "";
     // eslint-disable-next-line func-names
-    a.addEventListener("click", function (e) {
+    a.addEventListener("click", async function (e) {
       e.preventDefault();
-      onListItemClick(element);
+      await onListItemClick(element);
     });
     li.appendChild(a);
     lo.appendChild(li);

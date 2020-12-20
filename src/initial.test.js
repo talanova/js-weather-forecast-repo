@@ -7,8 +7,8 @@ describe("draw", () => {
     el = document.createElement("div");
   });
 
-  it("creates basic markup", async () => {
-    await draw(el);
+  it("creates basic markup", () => {
+    draw(el);
 
     const inputField = el.querySelector("#input-field");
     const input = el.querySelector("input");

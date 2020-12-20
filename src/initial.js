@@ -4,11 +4,11 @@ import { drawMap } from "./map";
 
 export async function getCurrentCity() {
   const url = "https://get.geojs.io/v1/ip/geo.json";
-  const response = await fetch(url);
+  const response = await global.fetch(url);
   return response.json();
 }
 
-export async function draw(el) {
+export function draw(el) {
   const inputField = document.createElement("form");
   inputField.id = "input-field";
   const input = document.createElement("input");
@@ -41,7 +41,7 @@ export async function draw(el) {
       return;
     }
 
-    const list = await readList();
+    const list = readList();
     list.push(city);
     while (list.length > 10) {
       list.shift();
@@ -49,8 +49,8 @@ export async function draw(el) {
 
     drawMap(mapField, weather.coord.lat, weather.coord.lon);
     drawWeather(weatherField, weather);
-    await drawList(listField, list);
-    await saveList(list);
+    drawList(listField, list);
+    saveList(list);
   }
 
   inputField.addEventListener("submit", onSubmit);

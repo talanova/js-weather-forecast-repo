@@ -31,12 +31,16 @@ export async function drawList(el, list) {
   const lo = document.createElement("lo");
   list.forEach((element) => {
     const li = document.createElement("li");
-    li.innerHTML = `<a class="btn" href="">${element}</a>`;
+    const a = document.createElement("a");
+    a.innerText = element;
+    a.className = "btn";
+    a.href = "";
     // eslint-disable-next-line func-names
-    li.addEventListener("click", function (e) {
+    a.addEventListener("click", function (e) {
       e.preventDefault();
       onListItemClick(element);
     });
+    li.appendChild(a);
     lo.appendChild(li);
   });
   el.appendChild(lo);

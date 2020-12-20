@@ -5,9 +5,6 @@
   "private": true,
   "scripts": {
     "test": "jest --coverage",
-    "test-calculator": "jest --testPathPattern=src/calculator/ --coverage --coverageDirectory=coverage/calculator",
-    "test-index": "jest --testPathPattern=src/index --coverage --coverageDirectory=coverage/index",
-    "test-all": "yarn run test && yarn run test-calculator && yarn run test-index",
     "lint": "prettier --check . && eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
     "start": "webpack serve --mode development",

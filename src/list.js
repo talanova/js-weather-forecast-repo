@@ -1,7 +1,7 @@
 import { drawWeather, getWeather } from "./weather";
 import { drawMap } from "./map";
 
-export async function readList() {
+export function readList() {
   const json = localStorage.getItem("cities");
   if (json == null) {
     return [];
@@ -9,7 +9,7 @@ export async function readList() {
   return JSON.parse(json);
 }
 
-export async function saveList(list) {
+export function saveList(list) {
   localStorage.setItem("cities", JSON.stringify(list));
 }
 

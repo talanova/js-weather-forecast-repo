@@ -24,6 +24,17 @@ describe("draw", () => {
     expect(listField).not.toBe(null);
     expect(mapField).not.toBe(null);
   });
+
+  it("raise onSubmit event", () => {
+    draw(el);
+
+    const inputField = el.querySelector("#input-field");
+    const input = el.querySelector("input");
+
+    input.value = "moscow";
+    inputField.dispatchEvent(new window.Event("submit"));
+    expect(input.value).toBe("");
+  });
 });
 
 describe("getCurrentCity", () => {

@@ -1,9 +1,10 @@
-import { readList, saveList, drawList } from "./list";
+import { readList, saveList, updateList } from "./list";
 import { draw } from "./initial";
 
-describe("mock localStorage", () => {
-  const data = ["moscow", "new york"];
+import * as module from "./weather";
+import * as testConstants from "./constants";
 
+describe("mock localStorage", () => {
   beforeEach(() => {
     // values stored in tests will also be available in other tests unless you run
     localStorage.clear();
@@ -29,54 +30,14 @@ describe("mock localStorage", () => {
   });
 
   it("should get json from localStorage", () => {
-    saveList(data);
+    saveList(testConstants.testList);
     const list = readList();
-    expect(list).toStrictEqual(data);
+    expect(list).toStrictEqual(testConstants.testList);
   });
 });
 
 describe("drawList", () => {
   let el;
-  const data = ["moscow", "new york"];
-  const weather = {
-    coord: { lon: 37.62, lat: 55.75 },
-    weather: [
-      { id: 600, main: "Snow", description: "light snow", icon: "13n" },
-    ],
-    base: "stations",
-    main: {
-      temp: 268.64,
-      feels_like: 263.68,
-      temp_min: 268.15,
-      temp_max: 269.15,
-      pressure: 1026,
-      humidity: 79,
-    },
-    visibility: 10000,
-    wind: { speed: 3, deg: 140 },
-    snow: { "1h": 0.21 },
-    clouds: { all: 90 },
-    dt: 1607879136,
-    sys: {
-      type: 1,
-      id: 9029,
-      country: "RU",
-      sunrise: 1607838694,
-      sunset: 1607864176,
-    },
-    timezone: 10800,
-    id: 524901,
-    name: "Moscow",
-    cod: 200,
-  };
-
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve(weather),
-    })
-  );
-  // eslint-disable-next-line global-require
-  const module = require("./weather");
 
   beforeEach(() => {
     el = document.createElement("div");
@@ -85,29 +46,33 @@ describe("drawList", () => {
   it("returns basic markup", () => {
     draw(el);
     const listField = el.querySelector("#list-field");
-    drawList(listField, data);
+    updateList(listField, testConstants.testList);
 
-    const lo = el.querySelector("lo");
+    const lo = listField.querySelector("lo");
     expect(lo).not.toBe(null);
 
     const li = lo.querySelectorAll("li");
     expect(li).not.toBe(null);
-    expect(li.length).toBe(data.length);
-
-    expect(li[0].querySelector("a").innerText).toBe(data[0]);
-    expect(li[1].querySelector("a").innerText).toBe(data[1]);
+    expect(li.length).toBe(testConstants.testList.length);
+    expect(li[0].innerText).toBe(testConstants.testList[0]);
+    expect(li[1].innerText).toBe(testConstants.testList[1]);
   });
 
-  it("raise getWeather on city click", () => {
+  it("get weather on city click", () => {
     draw(el);
     const listField = el.querySelector("#list-field");
-    drawList(listField, data);
+    updateList(listField, testConstants.testList);
 
-    const li = el.querySelectorAll("li");
-    const a = li[0].querySelector("a");
+    const lo = listField.querySelector("lo");
+    const li = lo.querySelectorAll("li");
 
-    jest.spyOn(module, "getWeather");
-    a.dispatchEvent(new window.Event("click"));
-    expect(module.getWeather).toHaveBeenCalledWith(data[0]);
+    document.body.innerHTML = el.innerHTML;
+    jest
+      .spyOn(module, "getWeather")
+      .mockImplementation(() => Promise.resolve(testConstants.testWeather));
+    const city = testConstants.testList[0];
+
+    li[0].dispatchEvent(new window.Event("click"));
+    expect(module.getWeather).toHaveBeenCalledWith(city);
   });
 });

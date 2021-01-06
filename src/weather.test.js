@@ -1,44 +1,16 @@
-import { getWeather, drawWeather, convertKelvinToCelsius } from "./weather";
 import { draw } from "./initial";
+import { getWeather, updateWeather, convertKelvinToCelsius } from "./weather";
 
-const data = {
-  coord: { lon: 37.62, lat: 55.75 },
-  weather: [{ id: 600, main: "Snow", description: "light snow", icon: "13n" }],
-  base: "stations",
-  main: {
-    temp: 268.64,
-    feels_like: 263.68,
-    temp_min: 268.15,
-    temp_max: 269.15,
-    pressure: 1026,
-    humidity: 79,
-  },
-  visibility: 10000,
-  wind: { speed: 3, deg: 140 },
-  snow: { "1h": 0.21 },
-  clouds: { all: 90 },
-  dt: 1607879136,
-  sys: {
-    type: 1,
-    id: 9029,
-    country: "RU",
-    sunrise: 1607838694,
-    sunset: 1607864176,
-  },
-  timezone: 10800,
-  id: 524901,
-  name: "Moscow",
-  cod: 200,
-};
+import * as testConstants from "./constants";
 
 describe("getWeather", () => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve(data),
-    })
-  );
-
   it("returns weather info", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(testConstants.testWeather),
+      })
+    );
+
     const result = await getWeather("Moscow");
     expect(result.main.temp).toEqual(268.64);
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -51,7 +23,7 @@ describe("convertKelvinToCelsius", () => {
   });
 });
 
-describe("drawWeather", () => {
+describe("updateWeather", () => {
   let el;
 
   beforeEach(() => {
@@ -61,10 +33,10 @@ describe("drawWeather", () => {
   it("returns basic markup", () => {
     draw(el);
     const weatherField = el.querySelector("#weather-field");
-    drawWeather(weatherField, data);
+    updateWeather(weatherField, testConstants.testWeather);
 
-    const p = el.querySelector("p");
-    const img = el.querySelector("img");
+    const p = weatherField.querySelector("p");
+    const img = weatherField.querySelector("img");
 
     expect(p).not.toBe(null);
     expect(p.innerText).not.toBe("");

@@ -1,7 +1,7 @@
 import { draw } from "./initial";
-import { drawMap } from "./map";
+import { updateMap } from "./map";
 
-describe("drawMap", () => {
+describe("updateMap", () => {
   let el;
 
   beforeEach(() => {
@@ -11,9 +11,9 @@ describe("drawMap", () => {
   it("returns basic markup", () => {
     draw(el);
     const mapField = el.querySelector("#map-field");
-    drawMap(mapField, 1, 2);
+    updateMap(mapField, 1, 2);
 
-    const img = el.querySelector("img");
+    const img = mapField.querySelector("img");
     expect(img).not.toBe(null);
     expect(img.src).not.toBe("");
   });

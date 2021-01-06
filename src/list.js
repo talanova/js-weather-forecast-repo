@@ -1,5 +1,5 @@
-import { drawWeather, getWeather } from "./weather";
-import { drawMap } from "./map";
+import { getWeather, updateWeather } from "./weather";
+import { updateMap } from "./map";
 
 export function readList() {
   const json = localStorage.getItem("cities");
@@ -15,33 +15,32 @@ export function saveList(list) {
 
 async function onListItemClick(city) {
   const weather = await getWeather(city);
-
   const weatherField = document.querySelector("#weather-field");
-  drawWeather(weatherField, weather);
+  updateWeather(weatherField, weather);
 
   const mapField = document.querySelector("#map-field");
-  drawMap(mapField, weather.coord.lat, weather.coord.lon);
+  updateMap(mapField, weather.coord.lat, weather.coord.lon);
 }
 
-export function drawList(el, list) {
-  while (el.hasChildNodes()) {
-    el.removeChild(el.lastChild);
-  }
-
+export function drawList(el) {
   const lo = document.createElement("lo");
+  el.appendChild(lo);
+
+  el.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (e.target.matches("li")) {
+      await onListItemClick(e.target.textContent);
+    }
+  });
+}
+
+export function updateList(el, list) {
+  const lo = el.querySelector("lo");
+  lo.innerHTML = "";
+
   list.forEach((element) => {
     const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.innerText = element;
-    a.className = "btn";
-    a.href = "";
-    // eslint-disable-next-line func-names
-    a.addEventListener("click", async function (e) {
-      e.preventDefault();
-      await onListItemClick(element);
-    });
-    li.appendChild(a);
+    li.innerText = element;
     lo.appendChild(li);
   });
-  el.appendChild(lo);
 }

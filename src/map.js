@@ -1,9 +1,9 @@
-export function drawMap(el, latitude, longitude) {
-  while (el.hasChildNodes()) {
-    el.removeChild(el.lastChild);
-  }
-
+export function drawMap(el) {
   const img = document.createElement("img");
-  img.src = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w`;
   el.appendChild(img);
+}
+
+export function updateMap(el, latitude, longitude) {
+  const img = el.querySelector("img");
+  img.src = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w`;
 }

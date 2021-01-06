@@ -1,6 +1,6 @@
-import { readList, saveList, drawList } from "./list";
-import { getWeather, drawWeather } from "./weather";
-import { drawMap } from "./map";
+import { readList, saveList, drawList, updateList } from "./list";
+import { drawWeather, getWeather, updateWeather } from "./weather";
+import { drawMap, updateMap } from "./map";
 
 export async function getCurrentCity() {
   const url = "https://get.geojs.io/v1/ip/geo.json";
@@ -21,14 +21,17 @@ export function draw(el) {
   const weatherField = document.createElement("div");
   weatherField.id = "weather-field";
   el.appendChild(weatherField);
+  drawWeather(weatherField);
 
   const listField = document.createElement("div");
   listField.id = "list-field";
   el.appendChild(listField);
+  drawList(listField);
 
   const mapField = document.createElement("div");
   mapField.id = "map-field";
   el.appendChild(mapField);
+  drawMap(mapField);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -47,9 +50,10 @@ export function draw(el) {
       list.shift();
     }
 
-    drawMap(mapField, weather.coord.lat, weather.coord.lon);
-    drawWeather(weatherField, weather);
-    drawList(listField, list);
+    updateMap(mapField, weather.coord.lat, weather.coord.lon);
+    updateWeather(weatherField, weather);
+    updateList(listField, list);
+
     saveList(list);
   }
 

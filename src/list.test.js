@@ -48,10 +48,10 @@ describe("drawList", () => {
     const listField = el.querySelector("#list-field");
     updateList(listField, testConstants.testList);
 
-    const lo = listField.querySelector("lo");
-    expect(lo).not.toBe(null);
+    const ol = listField.querySelector("ol");
+    expect(ol).not.toBe(null);
 
-    const li = lo.querySelectorAll("li");
+    const li = ol.querySelectorAll("li");
     expect(li).not.toBe(null);
     expect(li.length).toBe(testConstants.testList.length);
     expect(li[0].innerText).toBe(testConstants.testList[0]);
@@ -63,8 +63,8 @@ describe("drawList", () => {
     const listField = el.querySelector("#list-field");
     updateList(listField, testConstants.testList);
 
-    const lo = listField.querySelector("lo");
-    const li = lo.querySelectorAll("li");
+    const ol = listField.querySelector("ol");
+    const li = ol.querySelectorAll("li");
 
     document.body.innerHTML = el.innerHTML;
     jest

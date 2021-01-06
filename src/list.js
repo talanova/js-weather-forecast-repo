@@ -23,8 +23,8 @@ async function onListItemClick(city) {
 }
 
 export function drawList(el) {
-  const lo = document.createElement("lo");
-  el.appendChild(lo);
+  const ol = document.createElement("ol");
+  el.appendChild(ol);
 
   el.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -35,12 +35,12 @@ export function drawList(el) {
 }
 
 export function updateList(el, list) {
-  const lo = el.querySelector("lo");
-  lo.innerHTML = "";
+  const ol = el.querySelector("ol");
+  ol.innerHTML = "";
 
   list.forEach((element) => {
     const li = document.createElement("li");
     li.innerText = element;
-    lo.appendChild(li);
+    ol.appendChild(li);
   });
 }

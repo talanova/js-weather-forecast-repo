@@ -29,7 +29,7 @@ export function drawList(el) {
   el.addEventListener("click", async (e) => {
     e.preventDefault();
     if (e.target.tagName === "SPAN") {
-      await onListItemClick(e.target.textContent);
+      await onListItemClick(e.target.innerText);
     }
   });
 }

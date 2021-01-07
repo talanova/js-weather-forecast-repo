@@ -28,7 +28,7 @@ export function drawList(el) {
 
   el.addEventListener("click", async (e) => {
     e.preventDefault();
-    if (e.target.matches("li")) {
+    if (e.target.tagName === "SPAN") {
       await onListItemClick(e.target.textContent);
     }
   });
@@ -40,7 +40,9 @@ export function updateList(el, list) {
 
   list.forEach((element) => {
     const li = document.createElement("li");
-    li.innerText = element;
+    const span = document.createElement("span");
+    span.innerText = element;
+    li.appendChild(span);
     ol.appendChild(li);
   });
 }

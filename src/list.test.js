@@ -54,8 +54,12 @@ describe("drawList", () => {
     const li = ol.querySelectorAll("li");
     expect(li).not.toBe(null);
     expect(li.length).toBe(testConstants.testList.length);
-    expect(li[0].innerText).toBe(testConstants.testList[0]);
-    expect(li[1].innerText).toBe(testConstants.testList[1]);
+
+    const span = ol.querySelectorAll("span");
+    expect(span).not.toBe(null);
+    expect(span.length).toBe(testConstants.testList.length);
+    expect(span[0].innerText).toBe(testConstants.testList[0]);
+    expect(span[1].innerText).toBe(testConstants.testList[1]);
   });
 
   it("get weather on city click", () => {
@@ -64,7 +68,7 @@ describe("drawList", () => {
     updateList(listField, testConstants.testList);
 
     const ol = listField.querySelector("ol");
-    const li = ol.querySelectorAll("li");
+    const span = ol.querySelectorAll("span");
 
     document.body.innerHTML = el.innerHTML;
     jest
@@ -72,7 +76,7 @@ describe("drawList", () => {
       .mockImplementation(() => Promise.resolve(testConstants.testWeather));
     const city = testConstants.testList[0];
 
-    li[0].dispatchEvent(new window.Event("click"));
+    span[0].dispatchEvent(new window.Event("click", { bubbles: true }));
     expect(module.getWeather).toHaveBeenCalledWith(city);
   });
 });

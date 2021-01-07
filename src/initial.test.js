@@ -6,8 +6,6 @@ describe("draw", () => {
   let el;
 
   beforeEach(() => {
-    jest.disableAutomock();
-
     el = document.createElement("div");
   });
 
@@ -34,8 +32,6 @@ describe("submit event", () => {
   let el;
 
   beforeEach(() => {
-    jest.autoMockOff();
-
     el = document.createElement("div");
   });
 

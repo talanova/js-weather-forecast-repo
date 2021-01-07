@@ -1,7 +1,7 @@
 import { readList, saveList, updateList } from "./list";
 import { draw } from "./initial";
+import { getWeather } from "./weather";
 
-import * as module from "./weather";
 import * as testConstants from "./constants";
 
 describe("mock localStorage", () => {
@@ -38,9 +38,17 @@ describe("mock localStorage", () => {
 
 describe("drawList", () => {
   let el;
+  let mockWeather;
+  jest.mock("./weather", () => ({
+    getWeather: jest.fn((city) => {
+      console.log(`in mock city is ${city}`);
+      return city === "moscow" ? mockWeather : null;
+    }),
+  }));
 
   beforeEach(() => {
     el = document.createElement("div");
+    mockWeather = testConstants.testWeather;
   });
 
   it("returns basic markup", () => {
@@ -67,16 +75,15 @@ describe("drawList", () => {
     const listField = el.querySelector("#list-field");
     updateList(listField, testConstants.testList);
 
-    const ol = listField.querySelector("ol");
-    const span = ol.querySelectorAll("span");
+    const li = listField.querySelectorAll("li");
+    const span = li[0].querySelector("span");
+    expect(span).not.toBe(null);
 
     document.body.innerHTML = el.innerHTML;
-    jest
-      .spyOn(module, "getWeather")
-      .mockImplementation(() => Promise.resolve(testConstants.testWeather));
     const city = testConstants.testList[0];
 
-    span[0].dispatchEvent(new window.Event("click", { bubbles: true }));
-    expect(module.getWeather).toHaveBeenCalledWith(city);
+    span.dispatchEvent(new window.Event("click", { bubbles: true }));
+    expect(getWeather.mock).toBeTruthy();
+    expect(getWeather).toHaveBeenCalledWith(city);
   });
 });

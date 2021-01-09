@@ -6,11 +6,7 @@ import * as testConstants from "./constants";
 
 describe("mock localStorage", () => {
   beforeEach(() => {
-    // values stored in tests will also be available in other tests unless you run
     localStorage.clear();
-    // you could also reset all mocks, but this could impact your other mocks
-    // jest.resetAllMocks();
-    // or individually reset a mock used
     localStorage.setItem.mockClear();
   });
 

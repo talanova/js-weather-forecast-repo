@@ -7,7 +7,7 @@ describe("getWeather", () => {
   it("returns weather info", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve(testConstants.testWeather),
+        json: () => Promise.resolve(testConstants.TEST_WEATHER),
       })
     );
 
@@ -33,7 +33,7 @@ describe("updateWeather", () => {
   it("returns basic markup", () => {
     draw(el);
     const weatherField = el.querySelector("#weather-field");
-    updateWeather(weatherField, testConstants.testWeather);
+    updateWeather(weatherField, testConstants.TEST_WEATHER);
 
     const p = weatherField.querySelector("p");
     const img = weatherField.querySelector("img");

@@ -1,6 +1,6 @@
-export const testList = ["moscow", "new york"];
+export const TEST_LIST = ["moscow", "new york"];
 
-export const testWeather = {
+export const TEST_WEATHER = {
   coord: { lon: 37.62, lat: 55.75 },
   weather: [{ id: 600, main: "Snow", description: "light snow", icon: "13n" }],
   base: "stations",

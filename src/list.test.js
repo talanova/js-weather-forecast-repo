@@ -30,9 +30,9 @@ describe("mock localStorage", () => {
   });
 
   it("should get json from localStorage", () => {
-    saveList(testConstants.testList);
+    saveList(testConstants.TEST_LIST);
     const list = readList();
-    expect(list).toStrictEqual(testConstants.testList);
+    expect(list).toStrictEqual(testConstants.TEST_LIST);
   });
 });
 
@@ -46,38 +46,38 @@ describe("drawList", () => {
 
   beforeEach(() => {
     el = document.createElement("div");
-    mockWeather = testConstants.testWeather;
+    mockWeather = testConstants.TEST_WEATHER;
   });
 
   it("returns basic markup", () => {
     draw(el);
     const listField = el.querySelector("#list-field");
-    updateList(listField, testConstants.testList);
+    updateList(listField, testConstants.TEST_LIST);
 
     const ol = listField.querySelector("ol");
     expect(ol).not.toBe(null);
 
     const li = ol.querySelectorAll("li");
     expect(li).not.toBe(null);
-    expect(li.length).toBe(testConstants.testList.length);
+    expect(li.length).toBe(testConstants.TEST_LIST.length);
 
     const span = ol.querySelectorAll("span");
     expect(span).not.toBe(null);
-    expect(span.length).toBe(testConstants.testList.length);
-    expect(span[0].innerText).toBe(testConstants.testList[0]);
-    expect(span[1].innerText).toBe(testConstants.testList[1]);
+    expect(span.length).toBe(testConstants.TEST_LIST.length);
+    expect(span[0].innerText).toBe(testConstants.TEST_LIST[0]);
+    expect(span[1].innerText).toBe(testConstants.TEST_LIST[1]);
   });
 
   it("get weather on city click", () => {
     draw(el);
     const listField = el.querySelector("#list-field");
-    updateList(listField, testConstants.testList);
+    updateList(listField, testConstants.TEST_LIST);
 
     const li = listField.querySelectorAll("li");
     const span = li[0].querySelector("span");
 
     document.body.innerHTML = el.innerHTML;
-    const city = testConstants.testList[0];
+    const city = testConstants.TEST_LIST[0];
 
     span.dispatchEvent(new window.Event("click", { bubbles: true }));
     expect(module.getWeather.mock).toBeTruthy();

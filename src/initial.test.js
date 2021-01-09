@@ -43,8 +43,8 @@ describe("submit event", () => {
 
     jest
       .spyOn(module, "getWeather")
-      .mockImplementation(() => Promise.resolve(testConstants.testWeather));
-    const city = testConstants.testList[0];
+      .mockImplementation(() => Promise.resolve(testConstants.TEST_WEATHER));
+    const city = testConstants.TEST_LIST[0];
 
     input.value = city;
     inputField.dispatchEvent(new window.Event("submit"));
@@ -56,7 +56,7 @@ describe("submit event", () => {
 
 describe("getCurrentCity", () => {
   it("returns current city info", async () => {
-    const city = testConstants.testList[0];
+    const city = testConstants.TEST_LIST[0];
 
     global.fetch = jest.fn(() =>
       Promise.resolve({

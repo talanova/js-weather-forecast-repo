@@ -2,13 +2,13 @@ import { draw, getCurrentCity } from "./initial";
 import * as module from "./weather";
 import * as testConstants from "./constants";
 
+let el;
+
+beforeEach(() => {
+  el = document.createElement("div");
+});
+
 describe("draw", () => {
-  let el;
-
-  beforeEach(() => {
-    el = document.createElement("div");
-  });
-
   it("creates basic markup", () => {
     draw(el);
 
@@ -29,12 +29,6 @@ describe("draw", () => {
 });
 
 describe("submit event", () => {
-  let el;
-
-  beforeEach(() => {
-    el = document.createElement("div");
-  });
-
   it("clean input and get weather on submit", () => {
     draw(el);
 

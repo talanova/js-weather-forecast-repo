@@ -36,8 +36,7 @@ describe("drawList", () => {
   let el;
   let mockWeather;
   jest.spyOn(module, "getWeather").mockImplementation((city) => {
-    console.log(`in mock city is ${city}`);
-    return city === "moscow" ? mockWeather : null;
+    return Promise.resolve(city === "moscow" ? mockWeather : null);
   });
 
   beforeEach(() => {

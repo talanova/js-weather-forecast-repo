@@ -94,12 +94,12 @@ describe("template", () => {
         template("{{if cond}}-{{condition}}-{{endif}}", { cond: true })
       ).toBe("--");
     });
-    it("replace placeholder in only if statement, fourth", () => {
+    it("replace placeholder in only if statement, fifth", () => {
       expect(
         template("{{if cond}}-{{condition}}-{{endif}}", { cond: true })
       ).toBe("--");
     });
-    it("replace placeholder in only if statement, fifth", () => {
+    it("replace placeholder in only if statement, sixth", () => {
       expect(template("{{if cond}}{{endif}}", { cond: true })).toBe("");
     });
   });

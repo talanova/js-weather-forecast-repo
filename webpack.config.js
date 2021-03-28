@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
@@ -7,11 +8,14 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    main: path.resolve(__dirname, "./src/index.js"),
+    main: path.resolve(__dirname, "./src/index.ts"),
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
+  },
+  resolve: {
+    extensions: [".js", ".ts"],
   },
   devServer: {
     contentBase: path.join(__dirname, "dist"),
@@ -40,7 +44,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(j|t)s$/,
         exclude: /node_modules/,
         use: ["babel-loader"],
       },

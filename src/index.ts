@@ -6,6 +6,9 @@ import { updateMap } from "./map";
 const appElement = document.getElementById("app");
 // eslint-disable-next-line func-names
 (async function () {
+  if (!appElement) {
+    return;
+  }
   draw(appElement);
 
   const list = readList();
@@ -13,11 +16,20 @@ const appElement = document.getElementById("app");
   const weather = await getWeather(data.city);
 
   const mapField = appElement.querySelector("#map-field");
+  if (!mapField) {
+    return;
+  }
   updateMap(mapField, weather.coord.lat, weather.coord.lon);
 
   const weatherField = appElement.querySelector("#weather-field");
+  if (!weatherField) {
+    return;
+  }
   updateWeather(weatherField, weather);
 
   const listField = appElement.querySelector("#list-field");
+  if (!listField) {
+    return;
+  }
   updateList(listField, list);
 })();

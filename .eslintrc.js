@@ -25,5 +25,7 @@ module.exports = {
     "no-plusplus": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
+    "@typescript-eslint/no-inferrable-types": "off",
+    "no-else-return": "off",
   },
 };

@@ -27,5 +27,6 @@ module.exports = {
     "import/extensions": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "no-else-return": "off",
+    "no-use-before-define": "off",
   },
 };

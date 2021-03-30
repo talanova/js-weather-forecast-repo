@@ -3,10 +3,11 @@ import { template } from "./template";
 describe("template", () => {
   const data = {
     name: "test-name",
+    age: 10,
     friends: [
-      { name: "first-friend-name" },
-      { name: "second-friend-name" },
-      { name: "third-friend-name" },
+      { name: "first-friend-name", age: 10 },
+      { name: "second-friend-name", age: 15 },
+      { name: "third-friend-name", age: 20 },
     ],
   };
 
@@ -29,36 +30,29 @@ describe("template", () => {
   });
 
   describe("for", () => {
-    it("replace all placeholdes inside loop", () => {
-      expect(
-        template(
-          "Hi, my name is {{name}}. And my friends are {{for friends}}{{name}}, {{endfor}}.",
-          data
-        )
-      ).toBe(
-        "Hi, my name is test-name. And my friends are first-friend-name, second-friend-name, third-friend-name, ."
-      );
-    });
-
     it("replace all placeholdes inside loop with notIsLastElement", () => {
       expect(
         template(
-          "Hi, my name is {{name}}. And my friends are {{for friends}}{{name}}{{if notIsLastElement}}, {{endif}}{{endfor}}.",
+          `Hi, my name is {{name}}.
+And my friends are {{for friends as friend}}{{friend.name}}{{if notIsLastElement}}, {{endif}}{{endfor}}.`,
           data
         )
       ).toBe(
-        "Hi, my name is test-name. And my friends are first-friend-name, second-friend-name, third-friend-name."
+        `Hi, my name is test-name.
+And my friends are first-friend-name, second-friend-name, third-friend-name.`
       );
     });
 
     it("replace all placeholdes inside loop with isLastElement", () => {
       expect(
         template(
-          "Hi, my name is {{name}}. And my friends are {{for friends}}{{name}}{{if isLastElement}} and so on{{else}}, {{endif}}{{endfor}}.",
+          `Hi, my name is {{name}}.
+And my friends are {{for friends as friend}}{{friend.name}}{{if isLastElement}} and so on{{else}}, {{endif}}{{endfor}}.`,
           data
         )
       ).toBe(
-        "Hi, my name is test-name. And my friends are first-friend-name, second-friend-name, third-friend-name and so on."
+        `Hi, my name is test-name.
+And my friends are first-friend-name, second-friend-name, third-friend-name and so on.`
       );
     });
   });
@@ -101,6 +95,28 @@ describe("template", () => {
     });
     it("replace placeholder in only if statement, sixth", () => {
       expect(template("{{if cond}}{{endif}}", { cond: true })).toBe("");
+    });
+  });
+
+  describe("template with html tags", () => {
+    const tpl = `<div>
+<p>Hi, my name is {{name}}{{if age}} and my age is {{age}}{{endif}}.</p>
+<ul>{{for friends as item}}
+<li>Hi, {{item.name}}, who are {{item.age}} years old! Are you a friend of {{name}}?</li>{{endfor}}
+</ul>
+</div>`;
+
+    it("check template with html tags", () => {
+      expect(template(tpl, data)).toBe(
+        `<div>
+<p>Hi, my name is test-name and my age is 10.</p>
+<ul>
+<li>Hi, first-friend-name, who are 10 years old! Are you a friend of test-name?</li>
+<li>Hi, second-friend-name, who are 15 years old! Are you a friend of test-name?</li>
+<li>Hi, third-friend-name, who are 20 years old! Are you a friend of test-name?</li>
+</ul>
+</div>`
+      );
     });
   });
 });

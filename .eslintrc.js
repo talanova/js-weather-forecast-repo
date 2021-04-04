@@ -28,5 +28,9 @@ module.exports = {
     "@typescript-eslint/no-inferrable-types": "off",
     "no-else-return": "off",
     "no-use-before-define": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "max-classes-per-file": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars": "off",
   },
 };

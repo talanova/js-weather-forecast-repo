@@ -1,5 +1,4 @@
-import { draw } from "./initial";
-import { getWeather, updateWeather, convertKelvinToCelsius } from "./weather";
+import { getWeather, convertKelvinToCelsius } from "./weather";
 
 import * as testConstants from "./constants";
 
@@ -12,7 +11,19 @@ describe("getWeather", () => {
     );
 
     const result = await getWeather("Moscow");
-    expect(result.main.temp).toEqual(268.64);
+    expect(result.temp).toEqual("-4.5°C");
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns 404", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(testConstants.TEST_WEATHER_404),
+      })
+    );
+
+    const result = await getWeather("abc");
+    expect(result.cod).toEqual(404);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 });
@@ -20,28 +31,5 @@ describe("getWeather", () => {
 describe("convertKelvinToCelsius", () => {
   it("returns -273.1 for 0", () => {
     expect(convertKelvinToCelsius(0)).toBe("-273.1");
-  });
-});
-
-describe("updateWeather", () => {
-  let el;
-
-  beforeEach(() => {
-    el = document.createElement("div");
-  });
-
-  it("returns basic markup", () => {
-    draw(el);
-    const weatherField = el.querySelector("#weather-field");
-    updateWeather(weatherField, testConstants.TEST_WEATHER);
-
-    const p = weatherField.querySelector("p");
-    const img = weatherField.querySelector("img");
-
-    expect(p).not.toBe(null);
-    expect(p.innerText).not.toBe("");
-
-    expect(img).not.toBe(null);
-    expect(img.src).not.toBe("");
   });
 });

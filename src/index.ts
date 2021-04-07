@@ -145,8 +145,6 @@ const appElement = document.getElementById("app") as HTMLElement;
       console.log("Error: ", error.message);
     });
 
-  console.log("weather: " + JSON.stringify(weather));
-
   const component = new WeatherForecastComponent(appElement, {
     weather,
     cities,

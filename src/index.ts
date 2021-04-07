@@ -7,14 +7,15 @@ import { getWeather } from "./weather";
 
 type Weather = {
   cod: number;
-  temp?: string;
-  icon?: string;
-  latitude?: string;
-  longitude?: string;
+  message?: string | null;
+  city?: string | null;
+  temp?: string | null;
+  icon?: string | null;
+  latitude?: string | null;
+  longitude?: string | null;
 };
 
 type WeatherForecastState = {
-  city: string;
   weather: Weather;
   cities: string[];
 };
@@ -26,8 +27,12 @@ class WeatherForecastComponent extends Component<WeatherForecastState> {
   <button>Get weather</button>
 </form>
 <div class="weather-field">
-  <p>{{city}} {{weather.temp}}</p>
-  <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
+  {{if weather.city}}
+    <p>{{weather.city}} {{weather.temp}}</p>
+    <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
+  {{else}}
+    <p>{{weather.message}}</p>
+  {{endif}}
 </div>
 <div class="list-field">
   <ul>{{for cities as item}}
@@ -35,74 +40,68 @@ class WeatherForecastComponent extends Component<WeatherForecastState> {
   </ul>
 </div>
 <div class="map-field">
-  <img src="https://maps.googleapis.com/maps/api/staticmap?center={{weather.latitude}},{{weather.longitude}}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w"/>
+  {{if weather.city}}
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{weather.latitude}},{{weather.longitude}}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w"/>
+  {{endif}}
 </div>
 `;
 
-  onSubmit = (ev: Event) => {
+  onSubmit = async (ev: Event) => {
     ev.preventDefault();
 
-    const currentCity = (ev.target as HTMLInputElement).value;
+    const target = ev.target as HTMLElement;
+    const input = target.querySelector("input") as HTMLInputElement;
+    const city = input.value;
+    input.value = "";
+    if (!city) {
+      return;
+    }
 
-    let curremtWeather: Weather = { cod: 404 };
-    getWeather(currentCity)
-      .then(
-        (
-          cod: number,
-          temp: string,
-          icon: string,
-          latitude: string,
-          longitude: string
-        ) => {
-          curremtWeather = { cod, temp, icon, latitude, longitude };
-        }
-      )
+    let currentWeather: Weather = { cod: 400, message: "" };
+    await getWeather(city)
+      .then((obj: Partial<Weather>) => {
+        currentWeather = { ...currentWeather, ...obj };
+      })
       .catch((error: Error) => {
-        /* show error message */
+        console.log("Error: ", error.message);
       });
-
-    if (curremtWeather.cod !== 200) {
+    if (currentWeather.cod !== 200) {
       return;
     }
 
     const list: string[] = readList();
-    list.push(currentCity);
-    while (list.length > 10) {
-      list.shift();
+    if (currentWeather.city) {
+      list.push(currentWeather.city);
+      while (list.length > 10) {
+        list.shift();
+      }
+      saveList(list);
     }
-    saveList(list);
 
     this.setState({
-      city: currentCity,
-      weather: curremtWeather,
+      weather: currentWeather,
       cities: list,
     });
   };
 
-  onSelectCity = (ev: Event) => {
+  onSelectCity = async (ev: Event) => {
     const target = ev.target as HTMLElement;
     if (target.tagName === "SPAN") {
       const currentCity = target.innerText as string;
 
-      let currentWeather: Weather = { cod: 404 };
-      getWeather(currentCity)
-        .then(
-          (
-            cod: number,
-            temp: string,
-            icon: string,
-            latitude: string,
-            longitude: string
-          ) => {
-            currentWeather = { cod, temp, icon, latitude, longitude };
-          }
-        )
+      let currentWeather: Weather = { cod: 400, message: "" };
+      await getWeather(currentCity)
+        .then((obj: Partial<Weather>) => {
+          currentWeather = { ...currentWeather, ...obj };
+        })
         .catch((error: Error) => {
-          /* show error message */
+          console.log("Error: ", error.message);
         });
+      if (currentWeather.cod !== 200) {
+        return;
+      }
 
       this.setState({
-        city: currentCity,
         weather: currentWeather,
       });
     }
@@ -129,33 +128,26 @@ const appElement = document.getElementById("app") as HTMLElement;
   const cities: string[] = readList();
 
   let city: string = "";
-  getCurrentCity()
+  await getCurrentCity()
     .then((value: string) => {
       city = value;
     })
     .catch((error: Error) => {
-      /* show error message */
+      console.log("Error: ", error.message);
     });
 
-  let weather: Weather = { cod: 404 };
-  getWeather(city)
-    .then(
-      (
-        cod: number,
-        temp: string,
-        icon: string,
-        latitude: string,
-        longitude: string
-      ) => {
-        weather = { cod, temp, icon, latitude, longitude };
-      }
-    )
+  let weather: Weather = { cod: 400, message: "" };
+  await getWeather(weather)
+    .then((obj: Partial<Weather>) => {
+      weather = { ...weather, ...obj };
+    })
     .catch((error: Error) => {
-      /* show error message */
+      console.log("Error: ", error.message);
     });
+
+  console.log("weather: " + JSON.stringify(weather));
 
   const component = new WeatherForecastComponent(appElement, {
-    city,
     weather,
     cities,
   });

@@ -9,11 +9,21 @@ describe("template", () => {
       { name: "second-friend-name", age: 15 },
       { name: "third-friend-name", age: 20 },
     ],
+    mam: {
+      name: "mam-name",
+    },
+    hobbies: ["first-hobby", "second-hobby", "third-hobby"],
   };
 
   describe("basic data placing", () => {
     it("puts data in placeholders", () => {
       expect(template("Hi, {{name}}!", data)).toBe("Hi, test-name!");
+    });
+
+    it("puts data in a placeholders, second", () => {
+      expect(
+        template("Hi, my name is {{name}}. And {{mam.name}} is my mam.", data)
+      ).toBe("Hi, my name is test-name. And mam-name is my mam.");
     });
 
     it("puts empty string if no data provided", () => {
@@ -22,7 +32,13 @@ describe("template", () => {
       );
     });
 
-    it("replace all placeholdes", () => {
+    it("puts empty string if no data provided, second", () => {
+      expect(
+        template("Hi, my name is {{name}}. And {{dad.name}} is my dad.", data)
+      ).toBe("Hi, my name is test-name. And  is my dad.");
+    });
+
+    it("puts data in all placeholdes, first", () => {
       expect(template("Hi, {{name}}! My name is {{name}} too.", data)).toBe(
         "Hi, test-name! My name is test-name too."
       );
@@ -30,11 +46,22 @@ describe("template", () => {
   });
 
   describe("for", () => {
+    it("replace all placeholdes inside", () => {
+      expect(
+        template(
+          `Hi, my name is {{name}}.
+And my hobbies: {{for hobbies as hobby}}{{hobby}}{{if notIsLastElement}}, {{endif}}{{endfor}}.`,
+          data
+        )
+      ).toBe(`Hi, my name is test-name.
+And my hobbies: first-hobby, second-hobby, third-hobby.`);
+    });
+
     it("replace all placeholdes inside loop with notIsLastElement", () => {
       expect(
         template(
           `Hi, my name is {{name}}.
-And my friends are {{for friends as friend}}{{friend.name}}{{if notIsLastElement}}, {{endif}}{{endfor}}.`,
+And my friends are {{for friends as friend}}{{friend.name}}{{if notIsLastElement}}, {{else}}.{{endif}}{{endfor}}`,
           data
         )
       ).toBe(
@@ -47,29 +74,33 @@ And my friends are first-friend-name, second-friend-name, third-friend-name.`
       expect(
         template(
           `Hi, my name is {{name}}.
-And my friends are {{for friends as friend}}{{friend.name}}{{if isLastElement}} and so on{{else}}, {{endif}}{{endfor}}.`,
+And my friends are {{for friends as friend}}{{friend.name}}{{if isLastElement}}.{{else}}, {{endif}}{{endfor}}`,
           data
         )
       ).toBe(
         `Hi, my name is test-name.
-And my friends are first-friend-name, second-friend-name, third-friend-name and so on.`
+And my friends are first-friend-name, second-friend-name, third-friend-name.`
       );
     });
   });
 
   describe("if else", () => {
     it("replace placeholders in if...else statement, first", () => {
-      expect(template("{{if cond}}1{{else}}2{{endif}}", { cond: true })).toBe(
-        "1"
-      );
+      expect(
+        template("{{if cond}}{{cond}}{{else}}{{cond}}{{endif}}", { cond: true })
+      ).toBe("true");
     });
     it("replace placeholders in if...else statement, second", () => {
-      expect(template("{{if cond}}1{{else}}2{{endif}}", { cond: false })).toBe(
-        "2"
-      );
+      expect(
+        template("{{if cond}}{{cond}}{{else}}{{cond}}{{endif}}", {
+          cond: false,
+        })
+      ).toBe("false");
     });
     it("replace placeholders in if...else statements, third", () => {
-      expect(template("{{if cond}}1{{else}}2{{endif}}", {})).toBe("");
+      expect(template("{{if cond}}{{cond}}{{else}}{{cond}}{{endif}}", {})).toBe(
+        ""
+      );
     });
 
     it("replace placeholder in only if statement, first", () => {
@@ -77,24 +108,6 @@ And my friends are first-friend-name, second-friend-name, third-friend-name and 
     });
     it("replace placeholder in only if statement, second", () => {
       expect(template("{{if cond}}1{{endif}}", { cond: false })).toBe("");
-    });
-    it("replace placeholder in only if statement, third", () => {
-      expect(template("{{if cond}}{{cond}}{{endif}}", { cond: true })).toBe(
-        "true"
-      );
-    });
-    it("replace placeholder in only if statement, fourth", () => {
-      expect(
-        template("{{if cond}}-{{condition}}-{{endif}}", { cond: true })
-      ).toBe("--");
-    });
-    it("replace placeholder in only if statement, fifth", () => {
-      expect(
-        template("{{if cond}}-{{condition}}-{{endif}}", { cond: true })
-      ).toBe("--");
-    });
-    it("replace placeholder in only if statement, sixth", () => {
-      expect(template("{{if cond}}{{endif}}", { cond: true })).toBe("");
     });
   });
 

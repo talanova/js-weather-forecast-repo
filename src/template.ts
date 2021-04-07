@@ -1,4 +1,4 @@
-function loopTemplate(tpl: string, data: object): string {
+function loopTemplate(tpl: string, data: any): string {
   const re = /{{for ([^}]+)}}((?:\s|\S)+){{endfor}}/gim;
   return tpl.replace(re, (match, param, body) => {
     const arr: string[] = param.split("as").map((x: string) => x.trim());
@@ -19,11 +19,11 @@ function loopTemplate(tpl: string, data: object): string {
 
 function ifTemplate(
   tpl: string,
-  data: object,
+  data: any,
   indexInLoop: number = -1,
   loopLength: number = -1,
   item: string,
-  itemData: object
+  itemData: any
 ): string {
   const re = /{{if ([^}]+)}}((?:\s|\S)+){{endif}}/gim;
   return tpl.replace(re, (match, param, body) => {
@@ -182,6 +182,7 @@ function keyTemplate(
 
     if (!second) {
       if (item && first === item) {
+        // eslint-disable-next-line no-unneeded-ternary
         return itemData ? itemData : "";
       }
       return first in data ? data[first] : "";
@@ -201,11 +202,11 @@ function keyTemplate(
 
 function internal(
   tpl: string,
-  data: object,
+  data: any,
   indexInLoop: number = -1,
   loopLength: number = -1,
   item: string = "",
-  itemData: object = {}
+  itemData: any = {}
 ): string {
   let text = loopTemplate(tpl, data);
   text = ifTemplate(text, data, indexInLoop, loopLength, item, itemData);

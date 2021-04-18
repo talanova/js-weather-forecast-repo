@@ -7,8 +7,8 @@ import { getWeather } from "./weather";
 
 type Weather = {
   cod: number;
-  message?: string | null;
-  city?: string | null;
+  message: string;
+  city: string;
   temp?: string | null;
   icon?: string | null;
   latitude?: string | null;
@@ -26,18 +26,16 @@ class WeatherForecastComponent extends Component<WeatherForecastState> {
   <input/>
   <button>Get weather</button>
 </form>
-<div class="weather-field">
-  {{if weather.city}}
-    <p>{{weather.city}} {{weather.temp}}</p>
-    <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
-  {{else}}
-    <p>{{weather.message}}</p>
-  {{endif}}
-</div>
 <div class="list-field">
   <ul>{{for cities as item}}
     <li><span>{{item}}</span></li>{{endfor}}
   </ul>
+</div>
+<div class="weather-field">
+  {{if weather.city}}
+    <p>{{weather.city}} {{weather.temp}}</p>
+    <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
+  {{endif}}
 </div>
 <div class="map-field">
   {{if weather.city}}
@@ -57,53 +55,29 @@ class WeatherForecastComponent extends Component<WeatherForecastState> {
       return;
     }
 
-    let currentWeather: Weather = { cod: 400, message: "" };
-    await getWeather(city)
-      .then((obj: Partial<Weather>) => {
-        currentWeather = { ...currentWeather, ...obj };
-      })
-      .catch((error: Error) => {
-        console.log("Error: ", error.message);
-      });
-    if (currentWeather.cod !== 200) {
+    const weather: Weather = await getWeather(city);
+    if (weather.cod !== 200) {
       return;
     }
 
-    const list: string[] = readList();
-    if (currentWeather.city) {
-      list.push(currentWeather.city);
-      while (list.length > 10) {
-        list.shift();
-      }
-      saveList(list);
-    }
+    const cities: string[] = readList();
+    cities.push(weather.city);
+    saveList(cities);
 
-    this.setState({
-      weather: currentWeather,
-      cities: list,
-    });
+    this.setState({ weather, cities });
   };
 
   onSelectCity = async (ev: Event) => {
     const target = ev.target as HTMLElement;
     if (target.tagName === "SPAN") {
-      const currentCity = target.innerText as string;
+      const city = target.innerText as string;
 
-      let currentWeather: Weather = { cod: 400, message: "" };
-      await getWeather(currentCity)
-        .then((obj: Partial<Weather>) => {
-          currentWeather = { ...currentWeather, ...obj };
-        })
-        .catch((error: Error) => {
-          console.log("Error: ", error.message);
-        });
-      if (currentWeather.cod !== 200) {
+      const weather: Weather = await getWeather(city);
+      if (weather.cod !== 200) {
         return;
       }
 
-      this.setState({
-        weather: currentWeather,
-      });
+      this.setState({ weather });
     }
   };
 
@@ -126,25 +100,8 @@ const appElement = document.getElementById("app") as HTMLElement;
   }
 
   const cities: string[] = readList();
-
-  let city: string = "";
-  await getCurrentCity()
-    .then((value: string) => {
-      city = value;
-    })
-    .catch((error: Error) => {
-      console.log("Error: ", error.message);
-    });
-
-  let weather: Weather = { cod: 400, message: "" };
-  await getWeather(weather)
-    .then((obj: Partial<Weather>) => {
-      weather = { ...weather, ...obj };
-    })
-    .catch((error: Error) => {
-      console.log("Error: ", error.message);
-    });
-
+  const city: string = await getCurrentCity();
+  const weather: Weather = await getWeather(city);
   const component = new WeatherForecastComponent(appElement, {
     weather,
     cities,

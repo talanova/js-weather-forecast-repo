@@ -7,5 +7,8 @@ export function readList() {
 }
 
 export function saveList(list) {
+  while (list.length > 10) {
+    list.shift();
+  }
   localStorage.setItem("cities", JSON.stringify(list));
 }

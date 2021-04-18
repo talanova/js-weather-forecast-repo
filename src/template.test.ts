@@ -103,11 +103,15 @@ And my friends are first-friend-name, second-friend-name, third-friend-name.`
       );
     });
 
-    it("replace placeholder in only if statement, first", () => {
-      expect(template("{{if cond}}1{{endif}}", { cond: true })).toBe("1");
+    it("replace placeholders in if...else statements, fourth", () => {
+      expect(
+        template("{{if mam.name}}{{mam.name}}{{else}}text{{endif}}", data)
+      ).toBe("mam-name");
     });
-    it("replace placeholder in only if statement, second", () => {
-      expect(template("{{if cond}}1{{endif}}", { cond: false })).toBe("");
+    it("replace placeholders in if...else statements, fifth", () => {
+      expect(
+        template("{{if dad.name}}{{dad.name}}{{else}}text{{endif}}", data)
+      ).toBe("");
     });
   });
 

@@ -22,8 +22,20 @@ describe("getWeather", () => {
       })
     );
 
-    const result = await getWeather("abc");
+    const result = await getWeather("Moscow");
     expect(result.cod).toEqual(404);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("api is down", async () => {
+    const testCity = testConstants.TEST_LIST[0];
+
+    global.fetch = jest.fn(() => () =>
+      Promise.reject(new Error("API is down"))
+    );
+
+    const result = await getWeather("Moscow");
+    expect(result.cod).toEqual(undefined);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

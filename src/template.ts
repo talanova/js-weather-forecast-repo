@@ -111,7 +111,6 @@ function ifTemplate(
           );
         }
       }
-
       return "";
     }
 
@@ -161,7 +160,31 @@ function ifTemplate(
         }
         return "";
       }
+      return "";
+    }
 
+    if (first in data) {
+      if (second in data[first]) {
+        if (data[first][second]) {
+          return internal(
+            ifBody,
+            data,
+            indexInLoop,
+            loopLength,
+            item,
+            itemData
+          );
+        } else if (elseBody) {
+          return internal(
+            elseBody,
+            data,
+            indexInLoop,
+            loopLength,
+            item,
+            itemData
+          );
+        }
+      }
       return "";
     }
     return "";

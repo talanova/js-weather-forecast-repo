@@ -1,11 +1,15 @@
+import { template } from "./template";
+
 export class Component<State> {
-  state: State = {} as State;
+  protected state: State = {} as State;
 
-  events: {
-    [key: string]: (ev: Event) => void;
-  } = {};
+  protected events: Record<string, (ev: Event) => void> = {};
 
-  constructor(private el: HTMLElement, initialState?: Partial<State>) {
+  constructor(
+    private el: HTMLElement,
+    private tpl: string,
+    initialState?: Partial<State>
+  ) {
     setTimeout(() => this.setState(initialState), 0);
     this.onMount(el);
   }
@@ -31,8 +35,7 @@ export class Component<State> {
   // eslint-disable-next-line class-methods-use-this
   onMount(el: HTMLElement): void {}
 
-  // eslint-disable-next-line class-methods-use-this
   render(): string {
-    return "";
+    return template(this.tpl, this.state);
   }
 }

@@ -95,8 +95,6 @@ describe("WeatherForecastComponent", () => {
     const component = new WeatherForecastComponent(el, state);
     await sleep();
 
-    console.log(el.innerHTML);
-
     const field: HTMLDivElement | null = el.querySelector(".list-field");
     expect(field).not.toBe(null);
 
@@ -118,8 +116,6 @@ describe("WeatherForecastComponent", () => {
     (span as HTMLElement).dispatchEvent(
       new window.Event("click", { bubbles: true })
     );
-
-    console.log(span?.innerText);
 
     expect(weatherModule.getWeather.call.length).toBe(1);
     expect(weatherModule.getWeather).toHaveBeenCalledWith(span?.innerText);

@@ -5,7 +5,7 @@ import * as testConstants from "./constants";
 describe("mock localStorage", () => {
   beforeEach(() => {
     localStorage.clear();
-    localStorage.setItem.mockClear();
+    (localStorage.setItem as jest.Mock).mockClear();
   });
 
   it("should save to localStorage", () => {

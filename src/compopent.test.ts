@@ -1,7 +1,6 @@
 import { Component } from "./component";
 
-const sleep = (x: number = 10) =>
-  new Promise((resolve) => setTimeout(resolve, x));
+const sleep = (x = 10) => new Promise((resolve) => setTimeout(resolve, x));
 
 describe("Component", () => {
   let el;

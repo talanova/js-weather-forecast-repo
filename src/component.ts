@@ -5,6 +5,8 @@ export class Component<State> {
 
   protected events: Record<string, (ev: Event) => void> = {};
 
+  private mount = false;
+
   constructor(
     private el: HTMLElement,
     private tpl: string,
@@ -17,9 +19,10 @@ export class Component<State> {
   protected subscribeToEvents(): void {
     Object.keys(this.events).forEach((item) => {
       const [event, selector] = item.split("@");
-      this.el
-        .querySelector(selector)!
-        .addEventListener(event, this.events[item]);
+      const ul = this.el.querySelector(selector);
+      if (ul) {
+        ul.addEventListener(event, this.events[item]);
+      }
     });
   }
 
@@ -32,8 +35,10 @@ export class Component<State> {
     this.subscribeToEvents();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  onMount(el: HTMLElement): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onMount(el: HTMLElement): void {
+    this.mount = true;
+  }
 
   render(): string {
     return template(this.tpl, this.state);

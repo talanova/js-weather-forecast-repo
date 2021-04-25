@@ -34,7 +34,7 @@ export class WeatherForecastComponent extends Component<WeatherForecastState> {
     );
   }
 
-  onSubmit = async (ev: Event) => {
+  onSubmit: (ev: Event) => void = async (ev: Event) => {
     ev.preventDefault();
 
     const target = ev.target as HTMLElement;
@@ -57,7 +57,7 @@ export class WeatherForecastComponent extends Component<WeatherForecastState> {
     this.setState({ weather, cities });
   };
 
-  onSelectCity = async (ev: Event) => {
+  onSelectCity: (ev: Event) => void = async (ev: Event) => {
     const target = ev.target as HTMLElement;
     if (target.tagName === "SPAN") {
       const city = target.innerText as string;

@@ -20,8 +20,8 @@ function loopTemplate(tpl: string, data: any): string {
 function ifTemplate(
   tpl: string,
   data: any,
-  indexInLoop: number = -1,
-  loopLength: number = -1,
+  indexInLoop = -1,
+  loopLength = -1,
   item: string,
   itemData: any
 ): string {
@@ -34,7 +34,8 @@ function ifTemplate(
     if (param === "isLastElement") {
       if (indexInLoop === loopLength - 1) {
         return internal(ifBody, data, indexInLoop, loopLength, item, itemData);
-      } else if (elseBody) {
+      }
+      if (elseBody) {
         return internal(
           elseBody,
           data,
@@ -50,7 +51,8 @@ function ifTemplate(
     if (param === "notIsLastElement") {
       if (indexInLoop !== loopLength - 1) {
         return internal(ifBody, data, indexInLoop, loopLength, item, itemData);
-      } else if (elseBody) {
+      }
+      if (elseBody) {
         return internal(
           elseBody,
           data,
@@ -78,7 +80,8 @@ function ifTemplate(
             item,
             itemData
           );
-        } else if (elseBody) {
+        }
+        if (elseBody) {
           return internal(
             elseBody,
             data,
@@ -100,7 +103,8 @@ function ifTemplate(
             item,
             itemData
           );
-        } else if (elseBody) {
+        }
+        if (elseBody) {
           return internal(
             elseBody,
             data,
@@ -125,7 +129,8 @@ function ifTemplate(
             item,
             itemData
           );
-        } else if (elseBody) {
+        }
+        if (elseBody) {
           return internal(
             elseBody,
             data,
@@ -148,7 +153,8 @@ function ifTemplate(
             item,
             itemData
           );
-        } else if (elseBody) {
+        }
+        if (elseBody) {
           return internal(
             elseBody,
             data,
@@ -174,7 +180,8 @@ function ifTemplate(
             item,
             itemData
           );
-        } else if (elseBody) {
+        }
+        if (elseBody) {
           return internal(
             elseBody,
             data,
@@ -226,9 +233,9 @@ function keyTemplate(
 function internal(
   tpl: string,
   data: any,
-  indexInLoop: number = -1,
-  loopLength: number = -1,
-  item: string = "",
+  indexInLoop = -1,
+  loopLength = -1,
+  item = "",
   itemData: any = {}
 ): string {
   let text = loopTemplate(tpl, data);

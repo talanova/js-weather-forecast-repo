@@ -17,20 +17,20 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     "import/prefer-default-export": "off",
     "jest/valid-title": "off",
     "no-console": "off",
-    "no-alert": "off",
-    "no-restricted-globals": "off",
     "no-plusplus": "off",
-    "import/no-unresolved": "off",
-    "import/extensions": "off",
-    "@typescript-eslint/no-inferrable-types": "off",
-    "no-else-return": "off",
     "no-use-before-define": "off",
-    "@typescript-eslint/no-empty-function": "off",
+    "import/extensions": "off",
     "max-classes-per-file": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+  },
+  settings: {
+    "import/resolver": {
+      node: {
+        extensions: [".js", ".ts"],
+      },
+    },
   },
 };

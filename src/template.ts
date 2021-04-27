@@ -1,15 +1,51 @@
-function loopTemplate(tpl: string, data: any): string {
-  const re = /{{for ([^}]+)}}((?:\s|\S)+){{endfor}}/gim;
-  return tpl.replace(re, (match, param, body) => {
-    const arr: string[] = param.split("as").map((x: string) => x.trim());
-    const first: string = arr[0];
-    const second: string | null = arr.length === 2 ? arr[1] : "";
+type TemplateParamsType = {
+  tpl: string;
+  data: any;
+  indexInLoop: number;
+  loopLength: number;
+  item: string | null;
+  itemData: any;
+};
 
-    if (first in data) {
-      return data[first]
+function splitParam(
+  param: string,
+  spliter: string
+): { first: string; second: string | null } {
+  const arr: string[] = param.split(spliter).map((x: string) => x.trim());
+  return {
+    first: arr[0],
+    second: arr.length === 2 ? arr[1] : null,
+  };
+}
+
+function splitBranches(
+  body: string
+): { ifBody: string; elseBody: string | null } {
+  const arr: string[] = body.split("{{else}}");
+  return {
+    ifBody: arr[0],
+    elseBody: arr.length === 2 ? arr[1] : null,
+  };
+}
+
+function loopTemplate(input: TemplateParamsType): string {
+  const re = /{{for ([^}]+)}}((?:\s|\S)+){{endfor}}/gim;
+
+  return input.tpl.replace(re, (match, param, body) => {
+    const { first, second } = splitParam(param, "as");
+
+    if (first in input.data && input.data[first] instanceof Array) {
+      return input.data[first]
         .map((el: any, index: number) => {
           // eslint-disable-next-line no-use-before-define
-          return internal(body, data, index, data[first].length, second, el);
+          return internal({
+            tpl: body,
+            data: input.data,
+            indexInLoop: index,
+            loopLength: input.data[first].length,
+            item: second,
+            itemData: el,
+          });
         })
         .join("");
     }
@@ -17,179 +53,101 @@ function loopTemplate(tpl: string, data: any): string {
   });
 }
 
-function ifTemplate(
-  tpl: string,
-  data: any,
-  indexInLoop = -1,
-  loopLength = -1,
-  item: string,
-  itemData: any
+function parseIsLastElement(
+  input: TemplateParamsType,
+  ifBody: string,
+  elseBody: string | null
+) {
+  if (input.indexInLoop === input.loopLength - 1) {
+    return internal({ ...input, tpl: ifBody });
+  }
+  if (elseBody) {
+    return internal({ ...input, tpl: elseBody });
+  }
+  return "";
+}
+
+function parseNotIsLastElement(
+  input: TemplateParamsType,
+  ifBody: string,
+  elseBody: string | null
 ): string {
+  if (input.indexInLoop !== input.loopLength - 1) {
+    return internal({ ...input, tpl: ifBody });
+  }
+  if (elseBody) {
+    return internal({ ...input, tpl: elseBody });
+  }
+  return "";
+}
+
+function ifTemplate(input: TemplateParamsType): string {
   const re = /{{if ([^}]+)}}((?:\s|\S)+){{endif}}/gim;
-  return tpl.replace(re, (match, param, body) => {
-    const arr: string[] = body.split("{{else}}");
-    const ifBody: string = arr[0];
-    const elseBody: string = arr.length === 2 ? arr[1] : "";
+
+  return input.tpl.replace(re, (match, param, body) => {
+    const { ifBody, elseBody } = splitBranches(body);
 
     if (param === "isLastElement") {
-      if (indexInLoop === loopLength - 1) {
-        return internal(ifBody, data, indexInLoop, loopLength, item, itemData);
-      }
-      if (elseBody) {
-        return internal(
-          elseBody,
-          data,
-          indexInLoop,
-          loopLength,
-          item,
-          itemData
-        );
-      }
-      return "";
+      return parseIsLastElement(input, ifBody, elseBody);
     }
 
     if (param === "notIsLastElement") {
-      if (indexInLoop !== loopLength - 1) {
-        return internal(ifBody, data, indexInLoop, loopLength, item, itemData);
-      }
-      if (elseBody) {
-        return internal(
-          elseBody,
-          data,
-          indexInLoop,
-          loopLength,
-          item,
-          itemData
-        );
-      }
-      return "";
+      return parseNotIsLastElement(input, ifBody, elseBody);
     }
 
-    const paramArr: string[] = param.split(".").map((x: string) => x.trim());
-    const first: string = paramArr[0];
-    const second: string | null = paramArr.length === 2 ? paramArr[1] : null;
+    const { first, second } = splitParam(param, ".");
 
     if (!second) {
-      if (item && first === item) {
-        if (itemData) {
-          return internal(
-            ifBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+      if (input.item && first === input.item) {
+        if (input.itemData) {
+          return internal({ ...input, tpl: ifBody });
         }
         if (elseBody) {
-          return internal(
-            elseBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+          return internal({ ...input, tpl: elseBody });
         }
       }
 
-      if (first in data) {
-        if (data[first]) {
-          return internal(
-            ifBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+      if (first in input.data) {
+        if (input.data[first]) {
+          return internal({ ...input, tpl: ifBody });
         }
         if (elseBody) {
-          return internal(
-            elseBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+          return internal({ ...input, tpl: elseBody });
         }
       }
       return "";
     }
 
-    if (item && first === item) {
-      if (second in itemData[first]) {
-        if (itemData[first][second]) {
-          return internal(
-            ifBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+    if (input.item && first === input.item) {
+      if (second in input.itemData[first]) {
+        if (input.itemData[first][second]) {
+          return internal({ ...input, tpl: ifBody });
         }
         if (elseBody) {
-          return internal(
-            elseBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+          return internal({ ...input, tpl: elseBody });
         }
         return "";
       }
 
-      if (second in data[first]) {
-        if (data[first][second]) {
-          return internal(
-            ifBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+      if (second in input.data[first]) {
+        if (input.data[first][second]) {
+          return internal({ ...input, tpl: ifBody });
         }
         if (elseBody) {
-          return internal(
-            elseBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+          return internal({ ...input, tpl: elseBody });
         }
         return "";
       }
       return "";
     }
 
-    if (first in data) {
-      if (second in data[first]) {
-        if (data[first][second]) {
-          return internal(
-            ifBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+    if (first in input.data) {
+      if (second in input.data[first]) {
+        if (input.data[first][second]) {
+          return internal({ ...input, tpl: ifBody });
         }
         if (elseBody) {
-          return internal(
-            elseBody,
-            data,
-            indexInLoop,
-            loopLength,
-            item,
-            itemData
-          );
+          return internal({ ...input, tpl: elseBody });
         }
       }
       return "";
@@ -198,52 +156,50 @@ function ifTemplate(
   });
 }
 
-function keyTemplate(
-  tpl: string,
-  data: any,
-  item?: string,
-  itemData?: any
-): string {
+function keyTemplate(input: TemplateParamsType): string {
   const re = /{{([^}]+)}}/gi;
-  return tpl.replace(re, (match, param) => {
-    const arr: string[] = param.split(".").map((x: string) => x.trim());
-    const first: string = arr[0];
-    const second: string | null = arr.length === 2 ? arr[1] : null;
+
+  return input.tpl.replace(re, (match, param) => {
+    const { first, second } = splitParam(param, ".");
 
     if (!second) {
-      if (item && first === item) {
+      if (input.item && first === input.item) {
         // eslint-disable-next-line no-unneeded-ternary
-        return itemData ? itemData : "";
+        return input.itemData ? input.itemData : "";
       }
-      return first in data ? data[first] : "";
+      return first in input.data ? input.data[first] : "";
     }
 
-    if (item && first === item) {
-      return second in itemData ? itemData[second] : "";
+    if (input.item && first === input.item) {
+      return second in input.itemData ? input.itemData[second] : "";
     }
 
-    if (first in data) {
-      return second in data[first] ? data[first][second] : "";
+    if (first in input.data) {
+      return second in input.data[first] ? input.data[first][second] : "";
     }
 
     return "";
   });
 }
 
-function internal(
-  tpl: string,
-  data: any,
-  indexInLoop = -1,
-  loopLength = -1,
-  item = "",
-  itemData: any = {}
-): string {
-  let text = loopTemplate(tpl, data);
-  text = ifTemplate(text, data, indexInLoop, loopLength, item, itemData);
-  return keyTemplate(text, data, item, itemData);
+function internal(input: TemplateParamsType): string {
+  const current = { ...input, tpl: loopTemplate(input) };
+  current.tpl = ifTemplate(current);
+  return keyTemplate(current);
 }
 
-export function template(tpl: string, data: any): string {
-  const text = internal(tpl, data);
-  return keyTemplate(text, data);
+export function template(tpl: string, data: unknown): string {
+  if (data instanceof Object) {
+    const input = {
+      tpl,
+      data,
+      indexInLoop: -1,
+      loopLength: -1,
+      item: null,
+      itemData: {},
+    };
+    input.tpl = internal(input);
+    return keyTemplate(input);
+  }
+  return "";
 }

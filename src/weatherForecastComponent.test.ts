@@ -13,10 +13,7 @@ describe("WeatherForecastComponent", () => {
   let cities: string[];
 
   jest.spyOn(weatherModule, "getWeather").mockImplementation((city: string) => {
-    if (city.toLocaleUpperCase() === "MOSCOW") {
-      return Promise.resolve(weather);
-    }
-    return Promise.reject(new Error("smth goes wrong"));
+    return Promise.resolve(weather);
   });
 
   jest.spyOn(listModule, "readList").mockImplementation(() => {

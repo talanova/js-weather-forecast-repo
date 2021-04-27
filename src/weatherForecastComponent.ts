@@ -45,16 +45,20 @@ export class WeatherForecastComponent extends Component<WeatherForecastState> {
       return;
     }
 
-    const weather: Weather = await getWeather(city);
-    if (weather.cod !== 200) {
-      return;
+    try {
+      const weather: Weather = await getWeather(city);
+      if (weather.cod !== 200) {
+        return;
+      }
+
+      const cities: string[] = readList();
+      cities.push(weather.city);
+      saveList(cities);
+
+      this.setState({ weather, cities });
+    } catch (err) {
+      console.log("Error: ", err.message);
     }
-
-    const cities: string[] = readList();
-    cities.push(weather.city);
-    saveList(cities);
-
-    this.setState({ weather, cities });
   };
 
   onSelectCity: (ev: Event) => void = async (ev: Event) => {

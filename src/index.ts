@@ -1,4 +1,3 @@
-import { Weather } from "./types";
 import { getCurrentCity } from "./initial";
 import { readList } from "./list";
 import { getWeather } from "./weather";
@@ -12,12 +11,14 @@ const appElement = document.getElementById("app") as HTMLElement;
     return;
   }
 
+  const component = new WeatherForecastComponent(appElement);
   const cities: string[] = readList();
-  const city: string = await getCurrentCity();
-  const weather: Weather = await getWeather(city);
-
-  const component = new WeatherForecastComponent(appElement, {
-    weather,
-    cities,
-  });
+  try {
+    const city: string = await getCurrentCity();
+    const weather = await getWeather(city);
+    component.setState({ weather, cities });
+  } catch (err) {
+    console.log("Error: ", err.message);
+    component.setState({ cities });
+  }
 })();

@@ -164,8 +164,7 @@ function keyTemplate(input: TemplateParamsType): string {
 
     if (!second) {
       if (input.item && first === input.item) {
-        // eslint-disable-next-line no-unneeded-ternary
-        return input.itemData ? input.itemData : "";
+        return input.itemData || "";
       }
       return first in input.data ? input.data[first] : "";
     }

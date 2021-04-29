@@ -19,9 +19,9 @@ export class Component<State> {
   protected subscribeToEvents(): void {
     Object.keys(this.events).forEach((item) => {
       const [event, selector] = item.split("@");
-      const ul = this.el.querySelector(selector);
-      if (ul) {
-        ul.addEventListener(event, this.events[item]);
+      const elements = this.el.querySelectorAll(selector);
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].addEventListener(event, this.events[item]);
       }
     });
   }

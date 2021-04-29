@@ -12,18 +12,15 @@ describe("WeatherForecastComponent", () => {
   let weather: Weather;
   let cities: string[];
 
-  jest.spyOn(weatherModule, "getWeather").mockImplementation((city: string) => {
+  jest.spyOn(weatherModule, "getWeather").mockImplementation(() => {
     return Promise.resolve(weather);
   });
 
   jest.spyOn(listModule, "readList").mockImplementation(() => {
-    console.log("IN readList MOCK");
     return cities;
   });
 
-  jest.spyOn(listModule, "saveList").mockImplementation(() => {
-    console.log("IN saveList MOCK");
-  });
+  jest.spyOn(listModule, "saveList").mockImplementation();
 
   beforeEach(() => {
     el = document.createElement("div");

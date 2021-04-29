@@ -17,11 +17,13 @@ describe("WeatherForecastComponent", () => {
   });
 
   jest.spyOn(listModule, "readList").mockImplementation(() => {
+    console.log("IN readList MOCK");
     return cities;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  jest.spyOn(listModule, "saveList").mockImplementation((list: string[]) => {});
+  jest.spyOn(listModule, "saveList").mockImplementation(() => {
+    console.log("IN saveList MOCK");
+  });
 
   beforeEach(() => {
     el = document.createElement("div");
@@ -77,11 +79,12 @@ describe("WeatherForecastComponent", () => {
     expect(input?.value).toBe("Moscow");
     (field as HTMLFormElement).dispatchEvent(new window.Event("submit"));
     expect(input?.value).toBe("");
+    await sleep();
 
-    expect(weatherModule.getWeather.call.length).toBe(1);
+    expect(weatherModule.getWeather).toHaveBeenCalledTimes(1);
     expect(weatherModule.getWeather).toHaveBeenCalledWith("Moscow");
-    expect(listModule.readList.call.length).toBe(1);
-    expect(listModule.saveList.call.length).toBe(1);
+    expect(listModule.readList).toHaveBeenCalledTimes(1);
+    expect(listModule.saveList).toHaveBeenCalledTimes(1);
   });
 
   it("raise onSelectCity", async () => {
@@ -113,8 +116,11 @@ describe("WeatherForecastComponent", () => {
     (span as HTMLElement).dispatchEvent(
       new window.Event("click", { bubbles: true })
     );
+    await sleep();
 
-    expect(weatherModule.getWeather.call.length).toBe(1);
+    expect(weatherModule.getWeather).toHaveBeenCalledTimes(1);
     expect(weatherModule.getWeather).toHaveBeenCalledWith(span?.innerText);
+    expect(listModule.readList).toHaveBeenCalledTimes(0);
+    expect(listModule.saveList).toHaveBeenCalledTimes(0);
   });
 });

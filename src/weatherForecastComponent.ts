@@ -5,34 +5,28 @@ import { readList, saveList } from "./list";
 import { getWeather } from "./weather";
 
 export class WeatherForecastComponent extends Component<WeatherForecastState> {
-  constructor(el: HTMLElement, initialState?: Partial<WeatherForecastState>) {
-    super(
-      el,
-      `
-        <form class="input-field">
-          <input/>
-          <button>Get weather</button>
-        </form>
-        <div class="list-field">
-          <ul>{{for cities as item}}
-            <li><span>{{item}}</span></li>{{endfor}}
-          </ul>
-        </div>
-        <div class="weather-field">
-          {{if weather.city}}
-            <p>{{weather.city}} {{weather.temp}}</p>
-            <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
-          {{endif}}
-        </div>
-        <div class="map-field">
-          {{if weather.city}}
-            <img src="https://maps.googleapis.com/maps/api/staticmap?center={{weather.latitude}},{{weather.longitude}}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w"/>
-          {{endif}}
-        </div>
-        `,
-      initialState
-    );
-  }
+  private tpl = `
+  <form class="input-field">
+    <input/>
+    <button>Get weather</button>
+  </form>
+  <div class="list-field">
+    <ul>{{for cities as item}}
+      <li><span>{{item}}</span></li>{{endfor}}
+    </ul>
+  </div>
+  <div class="weather-field">
+    {{if weather.city}}
+      <p>{{weather.city}} {{weather.temp}}</p>
+      <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png"/>
+    {{endif}}
+  </div>
+  <div class="map-field">
+    {{if weather.city}}
+      <img src="https://maps.googleapis.com/maps/api/staticmap?center={{weather.latitude}},{{weather.longitude}}&zoom=14&size=600x600&key=AIzaSyAoHdEh_Eb_8xXLNi9802SEyZJj6epr04w"/>
+    {{endif}}
+  </div>
+  `;
 
   onSubmit: (ev: Event) => void = async (ev: Event) => {
     ev.preventDefault();
@@ -79,4 +73,8 @@ export class WeatherForecastComponent extends Component<WeatherForecastState> {
     "submit@form": this.onSubmit,
     "click@ul": this.onSelectCity,
   };
+
+  render(): string {
+    return this.tpl;
+  }
 }

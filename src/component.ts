@@ -7,11 +7,7 @@ export class Component<State> {
 
   private mount = false;
 
-  constructor(
-    private el: HTMLElement,
-    private tpl: string,
-    initialState?: Partial<State>
-  ) {
+  constructor(private el: HTMLElement, initialState?: Partial<State>) {
     setTimeout(() => this.setState(initialState), 0);
     this.onMount(el);
   }
@@ -31,7 +27,7 @@ export class Component<State> {
       ...this.state,
       ...newValue,
     };
-    this.el.innerHTML = this.render();
+    this.el.innerHTML = template(this.render(), this.state);
     this.subscribeToEvents();
   }
 
@@ -41,6 +37,7 @@ export class Component<State> {
   }
 
   render(): string {
-    return template(this.tpl, this.state);
+    this.mount = true;
+    return "";
   }
 }

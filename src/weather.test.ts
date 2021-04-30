@@ -50,7 +50,6 @@ describe("getWeather", () => {
     const city = "Moscow";
     const weather: Weather = testConstants.TEST_WEATHER;
     const status = 500;
-    const error = new Error(`An error has occured: ${status}`);
 
     fetchMock.mockResponse(JSON.stringify(weather), { status });
 

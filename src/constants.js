@@ -29,3 +29,8 @@ export const TEST_WEATHER = {
   name: "Moscow",
   cod: 200,
 };
+
+export const TEST_WEATHER_404 = {
+  cod: 404,
+  message: "city not found",
+};

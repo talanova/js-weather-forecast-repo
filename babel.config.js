@@ -9,5 +9,7 @@ module.exports = {
         corejs: 3, // default would be 2
       },
     ],
+    "@babel/preset-typescript",
   ],
+  plugins: ["@babel/plugin-proposal-class-properties"],
 };
